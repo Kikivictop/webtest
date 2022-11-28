@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.it.dao.SysuserDao">
+
+ <resultMap type="com.it.entity.Sysuser" id="BaseResultMap">
+  <id column="id" property="id" jdbcType="INTEGER"/>
+  <result column="uname" property="uname" jdbcType="VARCHAR"/>
+  <result column="upass" property="upass" jdbcType="VARCHAR"/>
+  <result column="utype" property="utype" jdbcType="VARCHAR"/>
+  <result column="delstatus" property="delstatus" jdbcType="VARCHAR"/>
+ </resultMap>
+
+ <select id="findAll" resultType="com.it.entity.Sysuser" parameterType="java.lang.String">
+  select * from sysuser
+ </select>
+
+ <select id="selectAll" resultMap="BaseResultMap">
+   select * from sysuser where uname=#{uname} and upass=#{upass}
+ </select>
+
+ <select id="findById" parameterType="Integer" resultType="com.it.entity.Sysuser">
+    select * from sysuser where id=#{id}
+ </select>
+
+ <update id="update" parameterType="com.it.entity.Sysuser">
+    update sysuser
+    <set>
+     <if test="upass!=null">
+      upass=#{upass}
+     </if>
+    </set>
+    where id=#{id}
+ </update>
+</mapper>

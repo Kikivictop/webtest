@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.it.dao.ProductDao">
+
+    <resultMap type="com.it.entity.Product" id="BaseResultMap">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="productname" property="productname" jdbcType="VARCHAR"/>
+        <result column="filename" property="filename" jdbcType="VARCHAR"/>
+        <result column="fid" property="fid" jdbcType="VARCHAR"/>
+        <result column="sid" property="sid" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="DOUBLE"/>
+        <result column="addr" property="addr" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="savetime" property="savetime" jdbcType="VARCHAR"/>
+        <result column="delstatus" property="delstatus" jdbcType="VARCHAR"/>
+        <result column="istj" property="istj" jdbcType="VARCHAR"/>
+        <result column="salenum" property="salenum" jdbcType="INTEGER"/>
+        <result column="favnum" property="favnum" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+
+    <select id="selectAll" parameterType="HashMap" resultMap="BaseResultMap">
+        select * from product where 1=1 and delstatus=0
+        <if test="key!='' and key!=null">
+            and productname  like "%"#{key}"%"
+        </if>
+        <if test="fid!='' and fid!=null">
+            and fid=#{fid}
+        </if>
+        <if test="sid!='' and sid!=null">
+            and sid=#{sid}
+        </if>
+        <if test="istj!='' and istj!=null">
+            and istj=#{istj}
+        </if>
+
+        <choose>
+            <when test="biaoji!='' and biaoji!=null">
+                <choose>
+                    <when test="biaoji=='maxjg'">
+                        order by price desc
+                    </when>
+                    <when test="biaoji=='mixjg'">
+                        order by price asc
+                    </when>
+                    <when test="biaoji=='salenum'">
+                        order by salenum desc
+                    </when>
+                    <when test="biaoji=='favnum'">
+                        order by favnum desc
+                    </when>
+                    <otherwise >
+                        order by id desc
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+
+
+    </select>
+
+
+
+    <insert id="add" parameterType="com.it.entity.Product">
+        insert into product values(null,#{productname},#{filename},#{fid},#{sid},#{price},#{addr},#{content},#{savetime},#{delstatus},#{istj},#{salenum},#{favnum})
+    </insert>
+
+
+    <select id="findById" parameterType="Integer" resultType="com.it.entity.Product">
+        select * from product where id=#{id}
+    </select>
+    <update id="update" parameterType="com.it.entity.Product">
+        update product
+        <set>
+            <if test="productname!=null">
+                productname=#{productname},
+            </if>
+            <if test="filename!=null">
+                filename=#{filename},
+            </if>
+            <if test="fid!=null">
+                fid=#{fid},
+            </if>
+            <if test="sid!=null">
+                sid=#{sid},
+            </if>
+            <if test="price!=null">
+                price=#{price},
+            </if>
+            <if test="addr!=null">
+                addr=#{addr},
+            </if>
+            <if test="content!=null">
+                content=#{content},
+            </if>
+            <if test="delstatus!=null">
+                delstatus=#{delstatus},
+            </if>
+            <if test="istj!=null">
+                istj=#{istj},
+            </if>
+
+            <if test="salenum &gt; 0">
+                salenum=#{salenum},
+            </if>
+            <if test="favnum &gt; 0">
+                favnum=#{favnum},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+
+    <select id="selectProductAll" parameterType="HashMap" resultMap="BaseResultMap">
+        select * from product where 1=1 and delstatus=0
+        <if test="key!=null">
+            and <![CDATA[ price >=#{key} ]]>
+        </if>
+        <if test="key!=null">
+            and <![CDATA[ price <=#{key1} ]]>
+        </if>
+        order by id desc
+    </select>
+
+    <select id="selectMaxprice" resultType="com.it.entity.Product">
+        SELECT  ID ,max(price) AS price FROM product GROUP BY id ORDER BY price desc limit 1
+    </select>
+
+    <select id="selectMinprice" resultType="com.it.entity.Product">
+        SELECT  ID ,max(price) AS price FROM product GROUP BY id ORDER BY price  limit 1
+    </select>
+
+
+    <select id="findByAll" parameterType="HashMap" resultMap="BaseResultMap">
+        select * from product where 1=1 and delstatus=0
+
+        <if test="id!='' and id!=null">
+            and id!=#{id}
+        </if>
+        <if test="sid!='' and sid!=null">
+            and sid=#{sid}
+        </if>
+
+        order by rand() limit 4
+
+    </select>
+
+</mapper>
